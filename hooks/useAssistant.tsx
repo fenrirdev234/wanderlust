@@ -1,8 +1,9 @@
-import { Message } from '@/types/openai';
 import { useCallback, useState } from 'react';
 import useSWR from 'swr';
+import { Message } from '@/types/openai';
 import { useThread } from './useThread';
 import { useMap } from '@/context/Map';
+import { useNewAssistant } from './useNewAssistant';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -10,6 +11,8 @@ const useAssistant = () => {
   const [isRunning, setIsRunning] = useState(false);
   const { setCenter, addMarkers } = useMap();
   const { threadID, resetThread } = useThread();
+  const { assistantID } = useNewAssistant();
+
   const { data: messages, mutate } = useSWR<Message[]>(
     threadID ? `/api/openai/get-responses?threadID=${threadID}` : null,
     fetcher,
@@ -20,12 +23,12 @@ const useAssistant = () => {
 
   const sendMessageAndRun = useCallback(
     async (content: string, files: any[] = []) => {
-      if (isRunning || !threadID) return;
+      if (isRunning || !threadID || !assistantID) return;
 
       setIsRunning(true);
 
       try {
-        const messageRes = await fetch(`/api/openai/add-message`, {
+        const messageRes = await fetch('/api/openai/add-message', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -48,13 +51,14 @@ const useAssistant = () => {
           false
         );
 
-        const run = await fetch(`/api/openai/run-assistant`, {
+        const run = await fetch('/api/openai/run-assistant', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             threadID,
+            assistantID,
           }),
         });
 
@@ -118,7 +122,7 @@ const useAssistant = () => {
         setIsRunning(false);
       }
     },
-    [threadID, isRunning, mutate]
+    [threadID, threadID, isRunning, mutate]
   );
 
   return { messages, sendMessageAndRun, isRunning, resetThread };
