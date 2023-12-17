@@ -23,7 +23,7 @@ export function useThread() {
 
   async function resetThread() {
     // delete thread
-    await fetch(`/api/openai/delete-thread`, {
+    await fetch('/api/openai/delete-thread', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

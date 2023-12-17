@@ -1,6 +1,6 @@
-import { Message } from '@/types/openai';
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
+import { Message } from '@/types/openai';
 
 const openai = new OpenAI();
 
@@ -10,7 +10,6 @@ export default async function handler(
 ) {
   try {
     const { threadID, content, files } = req.body;
-
     if (!threadID) {
       return res.status(400).json({ error: 'Thread ID is required' });
     }
@@ -21,7 +20,7 @@ export default async function handler(
 
     const message = await openai.beta.threads.messages.create(threadID, {
       role: 'user',
-      content: content,
+      content,
       file_ids: files,
     });
 

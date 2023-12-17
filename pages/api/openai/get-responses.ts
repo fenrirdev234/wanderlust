@@ -1,6 +1,6 @@
-import { Message } from '@/types/openai';
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
+import { Message } from '@/types/openai';
 
 const initAssistantMessage: Message = {
   id: 'init',
