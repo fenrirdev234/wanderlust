@@ -11,6 +11,7 @@ const useAssistant = () => {
   const [isRunning, setIsRunning] = useState(false);
   const { setCenter, addMarkers } = useMap();
   const { threadID, resetThread } = useThread();
+  const [isConfetti, setIsConfetti] = useState(false);
   const { assistantID } = useNewAssistant();
 
   const { data: messages, mutate } = useSWR<Message[]>(
@@ -82,6 +83,7 @@ const useAssistant = () => {
         if (runRes.status === 'requires_action') {
           // get the arguments from the tool calls
           const toolCalls = runRes.required_action.submit_tool_outputs.tool_calls;
+
           // update the map center
           const updateMapToolCall = toolCalls.find((tc: any) => tc.function.name === 'update_map');
           if (updateMapToolCall) {
@@ -97,6 +99,17 @@ const useAssistant = () => {
           });
 
           addMarkers(markers);
+
+          // add all the confetti
+          const confettiToolCalls = toolCalls.filter(
+            (tc: any) => tc.function.name === 'display_cofetti'
+          );
+          const confettiYeah = confettiToolCalls.map((tc: any) => {
+            const { confetti } = JSON.parse(tc.function.arguments);
+            return confetti;
+          });
+
+          setIsConfetti(confettiYeah[0]);
 
           await fetch('/api/openai/submit-tool-output', {
             method: 'POST',
@@ -125,7 +138,7 @@ const useAssistant = () => {
     [threadID, threadID, isRunning, mutate]
   );
 
-  return { messages, sendMessageAndRun, isRunning, resetThread };
+  return { messages, sendMessageAndRun, isRunning, resetThread, isConfetti, setIsConfetti };
 };
 
 export default useAssistant;

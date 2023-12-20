@@ -5,7 +5,15 @@ import { Message } from '@/types/openai';
 const initAssistantMessage: Message = {
   id: 'init',
   role: 'assistant',
-  content: [{ type: 'text', text: { value: 'Where would you like to go?' } }],
+  content: [
+    {
+      type: 'text',
+      text: {
+        value:
+          'Greetings, Adeptus Mechanicus novice. I am your virtual assistant, dedicated to guiding you into the realm of wargaming, with a special focus on Warhammer 40k. I am here to answer any questions you may have about store locations, as well as to immerse you in the intricate history of our fictional universe, where in a dark future, only war prevails.',
+      },
+    },
+  ],
 };
 
 const openai = new OpenAI();

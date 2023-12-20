@@ -30,8 +30,10 @@
     "next": "14.0.1",
     "openai": "^4.17.0",
     "react": "^18.2.0",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
     "react-map-gl": "^7.1.6",
+    "react-use": "^17.4.2",
     "swr": "^2.2.4"
   },
   "devDependencies": {
